@@ -6,10 +6,11 @@
 package controladores;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  *
@@ -21,19 +22,15 @@ public class Usuario {
     private String nombre;
     private String email;
     private String rol;
-    
+
     public static void guardar(String nombre, String email, String rol) {
-        //Cargamos la conexión
         Conexion conexion = new Conexion();
         Connection con = conexion.getConnection();
         Statement st;
-        //Creamos la sentencia sql
         String sql = "insert into usuario (nombre, email, rol) values ('"+nombre+"','"+email+"','"+rol+"')";
-        //Ejecutamos la sentencia sql
         try{
             st = con.createStatement();
             st.executeUpdate(sql);
-            //Cerramos las conexiones
             con.close();
             st.close();
             System.out.println("insertado con éxito!!");
@@ -51,12 +48,19 @@ public class Usuario {
         try {
             st = con.createStatement();
             st.executeUpdate(sql);
-            //Obtenemos los datos del usuario
             con.close();
             st.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private Usuario(String id, String nombre, String email, String rol) {
+        this.id = Integer.parseInt(id);
+        this.nombre = nombre;
+        this.email = email;
+        this.rol = rol;
+        
     }
     
     public void update (String id, String nombre, String email, String rol){
@@ -67,7 +71,6 @@ public class Usuario {
         try{
             st = con.createStatement();
             st.executeUpdate(sql);
-            //Cerramos las conexiones
             con.close();
             st.close();
             System.out.println("UPDATED");
@@ -150,6 +153,35 @@ public class Usuario {
     public String getRol() {
         return rol;
     }
+
+    public Usuario() {
+    }
+    
+    
+    
+    public static ArrayList<Usuario> cargarUsuarios(){
+        Conexion conexion = new Conexion();
+        Connection con = conexion.getConnection();
+        Statement st;
+        ResultSet rs;
+        ArrayList <Usuario> usuarios = new ArrayList<Usuario>();
+        String sql = "select * from usuario";
+        try {
+            st = con.createStatement();
+            rs = st.executeQuery(sql);
+            while(rs.next()){
+                usuarios.add(new Usuario(rs.getNString(1), rs.getNString(2),rs.getNString(3),rs.getNString(4)));
+            }
+            con.close();
+            rs.close();
+            st.close();
+           
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return usuarios;
+    }
+    
     public Usuario [] getUsuarios() {
         //cargamos la conexión
         Conexion conexion = new Conexion();

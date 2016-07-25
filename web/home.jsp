@@ -141,7 +141,7 @@
             $("#formNuevoUser").submit(function(e){
                 e.preventDefault();
                var formData=$("#formNuevoUser").serialize();
-               var url = "guardarUsuario";
+               var url = "UsuarioServlet2";
                $.ajax({
                    type: "POST",
                    url: url,
@@ -151,6 +151,7 @@
                }
                });
             });
+                   
             
             $('.eliminarUsuario').click(function() {
                var userId = $(this).siblings('.userId').text();
